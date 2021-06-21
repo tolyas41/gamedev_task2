@@ -13,14 +13,25 @@ int main() {
 	first_obj->get_array();			  
 	
 //4. Implement the correct work with objects of the developed class when copying, moving and initializing.
+	
+	std::cout << "\n\ncopy assignment operator : \n\n";
+	Matrix object_operator;
+	Matrix random_object(123, 2, 4);
+	object_operator = random_object;
+	object_operator.get_array();
 
-	//copy
+	std::cout << "\n\nmove assignment operator : \n\n";
+	object_operator = Matrix{ 2,3,3 };
+	object_operator.get_array();
+
+	//copy constructor
 	Matrix copied_obj(*first_obj);
 	delete first_obj;
 	std::cout << "\n4. copied object from 2. num object : \n\n";
 	copied_obj.get_array();
 
-	//move
+
+	//move constructor
 	std::vector <Matrix> vec;
 	vec.push_back(Matrix{ 1,4,4 });
 	vec.push_back(Matrix{ 2,4,4 });

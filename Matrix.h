@@ -15,10 +15,16 @@ public:
 	Matrix(int array[][3]);
 
 //copy constructor
-	Matrix(const Matrix& obj);
+	Matrix(const Matrix& source);
+
+//copy assignment operator
+	Matrix& operator=(const Matrix& source);
 
 //move constructor
 	Matrix(Matrix&& obj) noexcept;
+
+//move operator
+	Matrix& operator = (Matrix&& source);
 
 //string to array conversion ctor
 	Matrix(char char_array[], int number_of_rows, int size_array);

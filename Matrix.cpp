@@ -39,16 +39,16 @@ Matrix::~Matrix() {
 }
 
 //deep copy constructor
-Matrix::Matrix(const Matrix& obj) {
-	width = obj.width;
-	height = obj.height;
- 	two_d_array = new int* [width];		  
+Matrix::Matrix(const Matrix& source) {
+	width = source.width;
+	height = source.height;
+	two_d_array = new int* [width];
 	for (int i = 0; i < width; i++)
 		two_d_array[i] = new int[height];
 
 	for (int i = 0; i < width; i++)
 		for (int j = 0; j < height; j++)
-			two_d_array[i][j] = obj.two_d_array[i][j];
+			two_d_array[i][j] = source.two_d_array[i][j];
 }
 
 //move constructor
@@ -98,5 +98,32 @@ std::string Matrix::array_converting(const Matrix& obj) {
 	return temp;
 }
 
+Matrix& Matrix::operator=(const Matrix& source){
+	if (this != &source)
+	{
+		delete[] two_d_array;
+		width = source.width;
+		height = source.height;
+		two_d_array = new int* [width];
+		for (int i = 0; i < width; i++)
+			two_d_array[i] = new int[height];
 
+		for (int i = 0; i < width; i++)
+			for (int j = 0; j < height; j++)
+				two_d_array[i][j] = source.two_d_array[i][j];
+	}
+	return *this;
+}
+
+Matrix& Matrix::operator = (Matrix&& source) {
+	if (this != &source)
+	{
+		delete[] two_d_array;
+		width = source.width;
+		height = source.height;
+		two_d_array = source.two_d_array;
+		source.two_d_array = nullptr;
+	}
+	return *this;
+}
 
