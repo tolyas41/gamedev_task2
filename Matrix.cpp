@@ -28,8 +28,8 @@ Matrix::Matrix(int num, int in_columns, int in_rows)
 //3. Contain a type conversion constructor that converts a directly specified 
 //2-dimensional array with numbers into a class object.
 
-Matrix::Matrix(int* array, int row, int col)
-	: columns(col), rows(row) {
+Matrix::Matrix(int* array, int in_rows, int in_columns)
+	: columns(in_columns), rows(in_rows) {
 		grid_of_numbers = new int* [columns];		  
 		for (int i = 0; i < columns; i++) {
 			grid_of_numbers[i] = new int[rows];
@@ -37,17 +37,18 @@ Matrix::Matrix(int* array, int row, int col)
 			
 		for (int i = 0; i < columns; i++) {
 			for (int j = 0; j < rows; j++) {
-				grid_of_numbers[i][j] = array[i * row + j];
+				grid_of_numbers[i][j] = array[i * rows + j];
 			}	
 		}
 }
 
 //destructor
 Matrix::~Matrix() {
-	//for (int i = 0; i < rows; i++) {
-	//	delete [] grid_of_numbers[i];
-	//}
-	delete [] grid_of_numbers; 
+	for (int i = 0; i < rows; i++) {
+		delete[] grid_of_numbers[i];
+	}
+	delete[] grid_of_numbers;
+	std::cout << "deleting\n";
 }
 
 //deep copy constructor
@@ -66,9 +67,9 @@ Matrix::Matrix(const Matrix& source)
 }
 
 //move constructor
-Matrix::Matrix(Matrix&& source) noexcept
-	: grid_of_numbers(source.grid_of_numbers) {
-		source.grid_of_numbers = nullptr;
+Matrix::Matrix(Matrix&& source) 
+	: columns(source.columns), rows(source.rows), grid_of_numbers(source.grid_of_numbers) {
+		delete [] source.grid_of_numbers;
 }
 
 //string to array conversion ctor
@@ -122,7 +123,8 @@ std::string Matrix::to_string(const Matrix& source) {
 	return temp;
 }
 
-Matrix& Matrix::operator=(const Matrix& source) {
+//copy assignment operator
+Matrix& Matrix::operator=(const Matrix& source) noexcept {
 	if (this != &source) {
 		columns = source.columns;
 		rows = source.rows;
@@ -139,14 +141,25 @@ Matrix& Matrix::operator=(const Matrix& source) {
 	return *this;
 }
 
-Matrix& Matrix::operator=(Matrix&& source) {
+//move operator
+Matrix& Matrix::operator=(Matrix&& source) noexcept {
 	if (this != &source) {
-		delete [] grid_of_numbers;
+		grid_of_numbers = nullptr;
 		columns = source.columns;
 		rows = source.rows;
-		grid_of_numbers = source.grid_of_numbers;
+		grid_of_numbers = new int* [columns];
+		for (int i = 0; i < columns; i++) {
+			grid_of_numbers[i] = new int[rows];
+		}
+		for (int i = 0; i < columns; i++) {
+			for (int j = 0; j < rows; j++) {
+				grid_of_numbers[i][j] = source.grid_of_numbers[i][j];
+			}
+		}
 		source.grid_of_numbers = nullptr;
 	}
 	return *this;
 }
 
+// по мув оператору - nullptr или delete? что делать с &&объектом после его использования? 
+//он удаляется плохо

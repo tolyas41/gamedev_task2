@@ -21,13 +21,13 @@ public:
 	Matrix(const Matrix& source);
 
 //copy assignment operator
-	Matrix& operator=(const Matrix& source);
+	Matrix& operator=(const Matrix& source) noexcept;
 
 //move constructor
-	Matrix(Matrix&& source) noexcept;
+	Matrix(Matrix&& source);
 
 //move operator
-	Matrix& operator=(Matrix&& source);
+	Matrix& operator=(Matrix&& source) noexcept;
 
 //string to array conversion ctor
 	Matrix(const char* char_array, int str_cols, int str_rows);
