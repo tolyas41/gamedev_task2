@@ -1,18 +1,21 @@
 #pragma once
 #include <string>
+#include <iostream>
+
 
 class Matrix
 {
-	int width;
-	int height;
-	int** two_d_array;
+	int columns;
+	int rows;
+	int** grid_of_numbers;
+	static int default_columns, default_rows, default_numbers;
 public:
 
 	Matrix();
-	Matrix(int num, int set_width, int set_height);
+	Matrix(int num, int in_columns, int in_rows);
 
 //2-dimensional array with numbers into a class object.
-	Matrix(int array[][3]);
+	Matrix(int* array, int row, int col);
 
 //copy constructor
 	Matrix(const Matrix& source);
@@ -21,17 +24,17 @@ public:
 	Matrix& operator=(const Matrix& source);
 
 //move constructor
-	Matrix(Matrix&& obj) noexcept;
+	Matrix(Matrix&& source) noexcept;
 
 //move operator
-	Matrix& operator = (Matrix&& source);
+	Matrix& operator=(Matrix&& source);
 
 //string to array conversion ctor
-	Matrix(char char_array[], int number_of_rows, int size_array);
+	Matrix(const char* char_array, int str_cols, int str_rows);
 	~Matrix();
 	
-	void get_array();
+	void print_array();
 
-	std::string array_converting(const Matrix& obj);
+	std::string to_string(const Matrix& source);
 };
 
