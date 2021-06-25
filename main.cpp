@@ -1,5 +1,7 @@
 #include "Matrix.h"
 #include <vector>
+#include <iostream>
+
 
 int main() {
 
@@ -44,42 +46,14 @@ int main() {
 //6. Contain a type conversion constructor that converts the directly specified 
 //character type string (char *), which is a string representation of a mathematical 
 //object, into a class object. The conversion process must verify that the input is correct.
+//String format :
+//[a,b; c,d; …]
 
 	char str_numbers[] = "[101,202,303; 404,505,606; 9,8,7]";
-	int str_numbers_length = sizeof str_numbers / sizeof str_numbers[0];
-	int str_cols{ 1 };
-	for (int i = 0; i < str_numbers_length; i++)
-		if (str_numbers[i] == ';') {
-			str_cols++;
-		}
-
-
-	int str_rows{ 1 };
-	for (int i = 0; str_numbers[i] != ';'; i++)
-		if (str_numbers[i] == ',') {
-			str_rows++;
-		}																					  
-
-
-	bool valid_str_numbers = true;
-	for (int i = 0; i < str_numbers_length; i++)
-		if (str_numbers[i] == '[' || (str_numbers[i] >= '0' && str_numbers[i] <= '9') ||
-			str_numbers[i] == ']' || str_numbers[i] == ',' || str_numbers[i] == ';' ||
-			str_numbers[i] == ' ' || str_numbers[i] == '\0') {
-		}
-		else {
-			valid_str_numbers = false;
-		}
-
-	if (valid_str_numbers) {
-		std::cout << "\nchar array was converted to object`s array : \n\n";
-		Matrix* string_to_math = new Matrix(str_numbers, str_cols, str_rows);
-		string_to_math->print_array();
-		delete string_to_math;
-	}
-	else {
-		std::cout << "\n==INVALID STRING==\n";
-	}
+	std::cout << "\nchar array convert to object`s array : \n\n";
+	Matrix* string_to_math = new Matrix(str_numbers);
+	string_to_math->print_array();
+	delete string_to_math;
 
 //3. Contain a type conversion constructor that converts a directly specified 
 //2-dimensional array with numbers into a class object.

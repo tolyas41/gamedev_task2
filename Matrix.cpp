@@ -1,11 +1,9 @@
 #include "Matrix.h"
+#include <iostream>
 
-int Matrix::default_columns = 2;
-int Matrix::default_rows = 2;
-int Matrix::default_numbers = 0;
 
 Matrix::Matrix()
-	: Matrix(default_numbers, default_columns, default_rows) {
+	: rows(0), columns(0), grid_of_numbers(nullptr) {
 }
 
 //2. Contain a type conversion constructor that converts the 
@@ -71,12 +69,41 @@ Matrix::Matrix(Matrix&& source)
 		source.columns = 0;
 		source.rows = 0;
 		source.grid_of_numbers = nullptr;
-
 }
 
 //string to array conversion ctor
-Matrix::Matrix(const char* char_array, int str_cols, int str_rows)
-	: columns(str_cols), rows(str_rows) {
+Matrix::Matrix(const char* char_array) {
+	int str_numbers_length = 0;
+	int ch = 0;
+	while (char_array[ch] != '\0') {
+		str_numbers_length++;
+		ch++;
+	}
+	int str_cols{ 1 };
+	for (int i = 0; i < str_numbers_length; i++) {
+		if (char_array[i] == ';') {
+			str_cols++;
+		}
+	}
+	int str_rows{ 1 };
+	for (int i = 0; char_array[i] != ';'; i++) {
+		if (char_array[i] == ',') {
+			str_rows++;
+		}
+	}
+	bool valid_str_numbers = true;
+	for (int i = 0; i < str_numbers_length; i++) {
+		if (char_array[i] == '[' || (char_array[i] >= '0' && char_array[i] <= '9') ||
+			char_array[i] == ']' || char_array[i] == ',' || char_array[i] == ';' ||
+			char_array[i] == ' ' || char_array[i] == '\0') {
+		}
+		else {
+			valid_str_numbers = false;
+		}
+	}
+	if (valid_str_numbers) {
+		columns = str_cols;
+		rows = str_rows;
 		grid_of_numbers = new int* [columns];
 		for (int i = 0; i < columns; i++) {
 			grid_of_numbers[i] = new int[rows];
@@ -94,7 +121,14 @@ Matrix::Matrix(const char* char_array, int str_cols, int str_rows)
 					k++;
 				}
 			}
-		}	
+		}
+	}
+	else {
+		columns = 0;
+		rows = 0;
+		grid_of_numbers = nullptr;
+		std::cout << "\n==INVALID STRING==\n";
+	}
 }
 
 //copy assignment operator

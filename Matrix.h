@@ -1,14 +1,11 @@
 #pragma once
 #include <string>
-#include <iostream>
 
 
-class Matrix
-{
+class Matrix {
 	int columns;
 	int rows;
 	int** grid_of_numbers;
-	static int default_columns, default_rows, default_numbers;
 public:
 
 	Matrix();
@@ -30,7 +27,7 @@ public:
 	Matrix& operator=(Matrix&& source) noexcept;
 
 //string to array conversion ctor
-	Matrix(const char* char_array, int str_cols, int str_rows);
+	Matrix(const char* char_array);
 	~Matrix();
 	
 	void print_array();
