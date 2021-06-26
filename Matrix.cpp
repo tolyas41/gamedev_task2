@@ -1,6 +1,6 @@
 #include "Matrix.h"
 #include <iostream>
-
+#include <vector>
 
 Matrix::Matrix()
 	: rows(0), columns(0), grid_of_numbers(nullptr) {
@@ -74,33 +74,58 @@ Matrix::Matrix(Matrix&& source)
 //string to array conversion ctor
 Matrix::Matrix(const char* char_array) {
 	int str_numbers_length = 0;
-	int ch = 0;
-	while (char_array[ch] != '\0') {
+	bool valid_str_numbers = true;
+
+	while (char_array[str_numbers_length] != '\0') {
 		str_numbers_length++;
-		ch++;
 	}
-	int str_cols{ 1 };
-	for (int i = 0; i < str_numbers_length; i++) {
+	int str_cols = 1;
+	for (int i = 2; i < str_numbers_length; i++) {
 		if (char_array[i] == ';') {
 			str_cols++;
 		}
 	}
-	int str_rows{ 1 };
-	for (int i = 0; char_array[i] != ';'; i++) {
+	int str_rows = 1;
+	for (int i = 2; char_array[i] != ';'; i++) {
 		if (char_array[i] == ',') {
 			str_rows++;
 		}
 	}
-	bool valid_str_numbers = true;
-	for (int i = 0; i < str_numbers_length; i++) {
-		if (char_array[i] == '[' || (char_array[i] >= '0' && char_array[i] <= '9') ||
-			char_array[i] == ']' || char_array[i] == ',' || char_array[i] == ';' ||
-			char_array[i] == ' ' || char_array[i] == '\0') {
-		}
-		else {
-			valid_str_numbers = false;
+
+	if (char_array[0] != '[' || char_array[str_numbers_length - 1] != ']') {
+		valid_str_numbers = false;
+	}
+
+	std::vector < std::vector<int> > temp_vec(str_cols, std::vector<int>(str_rows, 0));
+	for (int i = 0, j = 0, k = 1; k < str_numbers_length - 1 && valid_str_numbers; k++) {
+		switch (char_array[k]) {
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				temp_vec[i][j] = temp_vec[i][j] * 10 + char_array[k] - '0';
+				break;
+			case ',':
+				j++;
+				break;
+			case ';':
+				i++;
+				j = 0;
+				break;
+			case ' ':
+				break;
+			default:
+				valid_str_numbers = false;
+				break;
 		}
 	}
+
 	if (valid_str_numbers) {
 		columns = str_cols;
 		rows = str_rows;
@@ -111,15 +136,7 @@ Matrix::Matrix(const char* char_array) {
 		int k = 0;
 		for (int i = 0; i < columns; i++) {
 			for (int j = 0; j < rows; j++) {
-				grid_of_numbers[i][j] = 0;
-				k++;
-				if (char_array[k] == ' ') {
-					k++;
-				}
-				while (char_array[k] >= '0' && char_array[k] <= '9') {
-					grid_of_numbers[i][j] = grid_of_numbers[i][j] * 10 + char_array[k] - '0';
-					k++;
-				}
+				grid_of_numbers[i][j] = temp_vec[i][j];
 			}
 		}
 	}
