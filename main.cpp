@@ -49,7 +49,7 @@ int main() {
 //String format :
 //[a,b; c,d; …]
 
-	char str_numbers[] = "[101,202,     303; 404,505,606; 9,8,7]";
+	char str_numbers[] = "[101,202,303; 404,505,606; 9,8,7]";
 	std::cout << "\nchar array convert to object`s array : \n\n";
 	Matrix* string_to_math = new Matrix(str_numbers);
 	string_to_math->print_array();

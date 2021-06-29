@@ -73,74 +73,95 @@ Matrix::Matrix(Matrix&& source)
 
 //string to array conversion ctor
 Matrix::Matrix(const char* char_array) {
+
 	int str_numbers_length = 0;
 	bool valid_str_numbers = true;
 
 	while (char_array[str_numbers_length] != '\0') {
 		str_numbers_length++;
 	}
-	int str_cols = 1;
-	for (int i = 2; i < str_numbers_length; i++) {
-		if (char_array[i] == ';') {
-			str_cols++;
-		}
-	}
-	int str_rows = 1;
-	for (int i = 2; char_array[i] != ';'; i++) {
-		if (char_array[i] == ',') {
-			str_rows++;
-		}
-	}
-
 	if (char_array[0] != '[' || char_array[str_numbers_length - 1] != ']') {
 		valid_str_numbers = false;
 	}
-
-	std::vector < std::vector<int> > temp_vec(str_cols, std::vector<int>(str_rows, 0));
-	for (int i = 0, j = 0, k = 1; k < str_numbers_length - 1 && valid_str_numbers; k++) {
-		switch (char_array[k]) {
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				temp_vec[i][j] = temp_vec[i][j] * 10 + char_array[k] - '0';
-				break;
-			case ',':
-				j++;
-				break;
-			case ';':
-				i++;
-				j = 0;
-				break;
-			case ' ':
-				break;
-			default:
-				valid_str_numbers = false;
-				break;
-		}
-	}
-
 	if (valid_str_numbers) {
-		columns = str_cols;
-		rows = str_rows;
-		grid_of_numbers = new int* [columns];
-		for (int i = 0; i < columns; i++) {
-			grid_of_numbers[i] = new int[rows];
+		int str_cols = 1;
+		for (int i = 1; i < str_numbers_length - 1; i++) {
+			if (char_array[i] == ';') {
+					str_cols++;
+					if (char_array[i + 1] != ' ' && (char_array[i + 1] < '0' || char_array[i + 1] > '9')) {
+						valid_str_numbers = false;
+					}
+				}
+			}
+		int str_rows = 1;
+		int prev_str_rows = 1;
+		bool first_semicolon_pass = false;
+		for (int i = 1; i <= str_numbers_length - 1; i++) {
+			if (char_array[i] == ',') {
+				str_rows++;
+				if (char_array[i + 1] < '0' || char_array[i + 1] > '9') {
+					valid_str_numbers = false;
+				}
+			}
+			if ((char_array[i] == ';' || char_array[i] == ']') && first_semicolon_pass) {
+				if (prev_str_rows != str_rows) {
+					valid_str_numbers = false;
+				}
+			}
+			if (char_array[i] == ';') {
+				first_semicolon_pass = true;
+				prev_str_rows = str_rows;
+				str_rows = 1;
+			}
 		}
-		int k = 0;
-		for (int i = 0; i < columns; i++) {
-			for (int j = 0; j < rows; j++) {
-				grid_of_numbers[i][j] = temp_vec[i][j];
+
+		if (valid_str_numbers) {
+			std::vector < std::vector<int> > temp_vec(str_cols, std::vector<int>(str_rows, 0));
+			for (int i = 0, j = 0, k = 1; k < str_numbers_length - 1 && valid_str_numbers; k++) {
+				switch (char_array[k]) {
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+					temp_vec[i][j] = temp_vec[i][j] * 10 + char_array[k] - '0';
+					break;
+				case ',':
+					j++;
+					break;
+				case ';':
+					i++;
+					j = 0;
+					break;
+				case ' ':
+					break;
+				default:
+					valid_str_numbers = false;
+					break;
+				}
+			}
+			if (valid_str_numbers) {
+				columns = str_cols;
+				rows = str_rows;
+				grid_of_numbers = new int* [columns];
+				for (int i = 0; i < columns; i++) {
+					grid_of_numbers[i] = new int[rows];
+				}
+				int k = 0;
+				for (int i = 0; i < columns; i++) {
+					for (int j = 0; j < rows; j++) {
+						grid_of_numbers[i][j] = temp_vec[i][j];
+					}
+				}
 			}
 		}
 	}
-	else {
+	if (valid_str_numbers == false) {
 		columns = 0;
 		rows = 0;
 		grid_of_numbers = nullptr;
